@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	title="CameraGIF: Home" xmlns:views="views.*">
+	
+	<fx:Script>
+	<![CDATA[
+		
+		private function createNewAnimation():void
+		{
+			navigator.pushView(CreateNewAnimationView);
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify" paddingBottom="10"
+			paddingLeft="10" paddingRight="10" paddingTop="10" gap="10"/>
+	</s:layout>
+	
+	<s:Button label="Create new animation" click="createNewAnimation();"/>
+	
+	<views:ExistingAnimations height="100%"/>
+	
+</s:View>

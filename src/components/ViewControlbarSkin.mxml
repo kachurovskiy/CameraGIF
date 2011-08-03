@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+	alpha.disabled="0.5">
+	
+	<fx:Metadata>
+		[HostComponent("components.ViewControlbar")]
+	</fx:Metadata>
+
+    <s:states>
+        <s:State name="normal" />
+        <s:State name="disabled" />
+    </s:states>
+    
+    <s:Line left="0" right="0" top="0">
+		<s:stroke>
+			<s:SolidColorStroke color="gray"/>
+		</s:stroke>
+	</s:Line>
+    
+    <s:Group id="contentGroup" left="10" right="10" top="10" bottom="10">
+        <s:layout>
+			<s:ButtonBarHorizontalLayout gap="10"/>
+        </s:layout>
+    </s:Group>
+
+</s:Skin>

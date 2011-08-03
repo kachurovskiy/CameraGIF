@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:components="components.*"
+	title="Animation name">
+
+	<fx:Script>
+	<![CDATA[
+		import model.GIFAnimation;
+		import model.GIFAnimationStorage;
+		
+		import mx.utils.StringUtil;
+		
+		[Bindable]
+		private var valid:Boolean = false;
+		
+		private function getValid(text:String):Boolean
+		{
+			return StringUtil.trim(text).length > 0;
+		}
+		
+		private function save():void
+		{
+			GIFAnimationStorage.instance.add(GIFAnimation(data));
+			
+			navigator.popToFirstView();
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<fx:Binding source="{getValid(nameInput.text)}" destination="valid"/>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:Group height="100%">
+		
+		<s:TextInput id="nameInput" maxChars="256" left="10" top="10" right="10"/>
+		
+	</s:Group>
+	
+	<components:ViewControlbar>
+		
+		<s:Button label="Save" click="save();" enabled="{valid}"/>
+		
+		<s:Button label="Cancel" click="navigator.popView();"/>
+		
+	</components:ViewControlbar>
+	
+</s:View>
