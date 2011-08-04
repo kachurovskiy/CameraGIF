@@ -24,6 +24,8 @@ public class GIFAnimation extends EventDispatcher
 	{
 		super();
 		
+		this.name = name;
+		
 		frames = new ArrayCollection();
 	}
 	
@@ -39,11 +41,25 @@ public class GIFAnimation extends EventDispatcher
 	[Bindable]
 	public var name:String;
 	
+	[Bindable]
+	public var date:Date = new Date();
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Properties
 	//
 	//--------------------------------------------------------------------------
+	
+	//----------------------------------
+	//  dateTime
+	//----------------------------------
+	
+	[Transient]
+	[Bindable("__NoChangeEvent__")]
+	public function get dateTime():Number
+	{
+		return date.time;
+	}
 	
 	//--------------------------------------
 	//  frames
@@ -109,6 +125,16 @@ public class GIFAnimation extends EventDispatcher
 		{
 			_empty = newEmpty;
 			dispatchEvent(new Event(Event.CHANGE));
+		}
+	}
+	
+	public function removeEmptyFrames():void
+	{
+		var n:int = _frames.length;
+		for (var i:int = n - 1; i >= 0; i--)
+		{
+			if (Frame(_frames[i]).empty)
+				_frames.removeItemAt(i);
 		}
 	}
 	

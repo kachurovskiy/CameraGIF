@@ -1,26 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	title="CameraGIF: Home" xmlns:views="views.*">
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:views="views.*" title="CameraGIF: Home" 
+	currentState="{getState(GIFAnimationStorage.instance.items.length)}" 
+	xmlns:components="components.*">
 	
 	<fx:Script>
 	<![CDATA[
+		import model.GIFAnimation;
+		import model.GIFAnimationStorage;
+		import model.Icons;
+		
+		private function getState(length:int):String
+		{
+			return length == 0 ? "empty" : "normal";
+		}
 		
 		private function createNewAnimation():void
 		{
 			navigator.pushView(EditAnimationView);
 		}
 		
+		private function editAnimation(gifAnimation:GIFAnimation):void
+		{
+			navigator.pushView(EditAnimationView, gifAnimation);
+		}
+		
+		private function viewAnimation(gifAnimation:GIFAnimation):void
+		{
+			navigator.pushView(ViewAnimationView, gifAnimation);
+		}
+		
+		private function shareAnimation(gifAnimation:GIFAnimation):void
+		{
+			navigator.pushView(ShareAnimationView, gifAnimation);
+		}
+		
+		private function removeAnimation(gifAnimation:GIFAnimation):void
+		{
+			GIFAnimationStorage.instance.remove(gifAnimation);
+		}
+		
 	]]>
 	</fx:Script>
 	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="empty"/>
+	</s:states>
+	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="justify" paddingBottom="10"
-			paddingLeft="10" paddingRight="10" paddingTop="10" gap="10"/>
+		<s:VerticalLayout horizontalAlign="justify" verticalAlign="middle" gap="0"/>
 	</s:layout>
 	
-	<s:Button label="Create new animation" click="createNewAnimation();"/>
+	<s:Group>
+			
+		<s:Button label="Create new animation" click="createNewAnimation();"
+			height.empty="100" left="10" right="10" top="10" bottom="10"/>
+			
+	</s:Group>
 	
-	<views:ExistingAnimations height="100%"/>
+	<views:ExistingAnimations id="animations" height="100%" gifaView="viewAnimation(event.gifAnimation);"
+		includeIn="normal"/>
+	
+	<components:ViewControlbar includeIn="normal"
+		enabled="{animations.selectedGIFAnimation != null}">
+		
+		<s:Button label="View" click="viewAnimation(animations.selectedGIFAnimation)"/>
+		
+		<s:Button label="Edit" click="editAnimation(animations.selectedGIFAnimation)"/>
+		
+		<s:Button label="Share" click="shareAnimation(animations.selectedGIFAnimation)"/>
+		
+		<s:Button icon="{Icons.instance.remove}" 
+			click="removeAnimation(animations.selectedGIFAnimation)"/>
+			
+	</components:ViewControlbar>
 	
 </s:View>

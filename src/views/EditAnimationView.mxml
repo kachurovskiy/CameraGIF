@@ -4,7 +4,8 @@
 	xmlns:components="components.*" 
 	xmlns:views="views.*" 
 	xmlns:frame="views.frame.*"
-	title="Edit animation" defaultButton="{previewButton}">
+	title="Edit animation" defaultButton="{previewButton}"
+	viewDeactivate="gifAnimation.removeEmptyFrames();">
 	
 	<fx:Script>
 	<![CDATA[
@@ -15,7 +16,7 @@
 		
 		private function preview():void
 		{
-			navigator.pushView(ViewGIFAnimationView, gifAnimation);
+			navigator.pushView(ViewAnimationView, gifAnimation);
 		}
 		
 		private function done():void

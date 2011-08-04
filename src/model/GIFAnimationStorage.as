@@ -1,5 +1,6 @@
 package model
 {
+import flash.events.EventDispatcher;
 import flash.net.SharedObject;
 
 import mx.collections.ArrayCollection;
@@ -7,8 +8,9 @@ import mx.collections.IList;
 import mx.collections.ISort;
 import mx.collections.Sort;
 import mx.collections.SortField;
+import mx.effects.easing.Back;
 
-public class GIFAnimationStorage
+public class GIFAnimationStorage extends EventDispatcher
 {
 	
 	private static const SHARED_OBJECT_NAME:String = "GIFs";
@@ -17,6 +19,7 @@ public class GIFAnimationStorage
 	
 	private static var _instance:GIFAnimationStorage;
 	
+	[Bindable("__NoChangeEvent__")]
 	public static function get instance():GIFAnimationStorage
 	{
 		if (!_instance)
@@ -54,11 +57,11 @@ public class GIFAnimationStorage
 		_items.refresh();
 		
 		sharedObject = SharedObject.getLocal(SHARED_OBJECT_NAME);
-		var storedItems:IList = sharedObject.data.items as IList;
+		var storedItems:Array = sharedObject.data.items as Array;
 		if (storedItems)
-			_items.addAll(storedItems);
+			_items.source = storedItems;
 		
-		sharedObject.data.items = _items;
+		sharedObject.data.items = _items.source;
 	}
 	
 	public function save():void
@@ -68,17 +71,29 @@ public class GIFAnimationStorage
 	
 	public function add(gifAnimation:GIFAnimation):void
 	{
-		_items.addItem(gifAnimation);
+		var found:Boolean = false;
+		for each (var item:GIFAnimation in items)
+		{
+			if (item.uid == gifAnimation.uid)
+				found = true;
+		}
+		if (!found)
+			_items.addItem(gifAnimation);
 		
 		save();
 	}
 	
 	public function remove(gifAnimation:GIFAnimation):void
 	{
-		for each (var item:GIFAnimation in items)
+		var n:int = items.length;
+		for (var i:int = 0; i < n; i++)
 		{
+			var item:GIFAnimation = items[i];
 			if (item.uid == gifAnimation.uid)
-				items.removeItemAt(items.getItemIndex(item));
+			{
+				items.removeItemAt(i);
+				break;
+			}
 		}
 		
 		save();

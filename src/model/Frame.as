@@ -3,6 +3,7 @@ package model
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
+import flash.display.LoaderInfo;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
@@ -37,6 +38,9 @@ public class Frame extends EventDispatcher
 	
 	public var duration:Number = 2000;
 	
+	[Bindable]
+	public var generation:int = 0;
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Properties
@@ -65,6 +69,7 @@ public class Frame extends EventDispatcher
 			return;
 		
 		_bitmapData = value;
+		generation++;
 		dispatchEvent(new Event("bitmapDataChange"));
 	}
 	
@@ -119,7 +124,7 @@ public class Frame extends EventDispatcher
 	
 	private function loader_initHandler(event:Event):void
 	{
-		bitmapData = Bitmap(Loader(event.target).content).bitmapData;
+		bitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
 	}
 	
 }

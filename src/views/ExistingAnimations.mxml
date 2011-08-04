@@ -2,6 +2,34 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark">
 	
-	<s:Label text="Existing animations (TODO)" horizontalCenter="0" verticalCenter="0" />
+	<fx:Metadata>
+		/**
+		* Dispatched when renderer is clicked.
+		*/
+		[Event(name="gifaView", type="views.GIFAnimationEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+	<![CDATA[
+		import model.GIFAnimation;
+		import model.GIFAnimationStorage;
+		
+		[Bindable("change")]
+		public function get selectedGIFAnimation():GIFAnimation
+		{
+			return list.selectedItem;
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:List id="list" dataProvider="{GIFAnimationStorage.instance.items}"
+		itemRenderer="views.GIFAnimationItemRenderer" contentBackgroundAlpha="0"
+		change="dispatchEvent(new Event(Event.CHANGE))">
+		<s:layout>
+			<s:TileLayout horizontalGap="10" verticalGap="10"
+				paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+	</s:List>
 	
 </s:Group>
