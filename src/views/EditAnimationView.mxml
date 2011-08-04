@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <components:GIFView xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark"
-	title="Edit animation" 
 	xmlns:components="components.*" 
-	xmlns:views="views.*" xmlns:frame="views.frame.*">
+	xmlns:views="views.*" 
+	xmlns:frame="views.frame.*"
+	title="Edit animation" defaultButton="{previewButton}">
 	
 	<fx:Script>
 	<![CDATA[
@@ -37,10 +38,9 @@
 	
 	<frame:AnimationFrames id="animationFrames" height="100%" gifAnimation="{gifAnimation}"/>
 	
-	<components:ViewControlbar visible="{gifAnimation &amp;&amp; !gifAnimation.empty}" 
-		includeInLayout="{gifAnimation &amp;&amp; !gifAnimation.empty}">
+	<components:ViewControlbar enabled="{gifAnimation &amp;&amp; !gifAnimation.empty}">
 		
-		<s:Button label="Preview" click="preview();"/>
+		<s:Button id="previewButton" label="Preview" click="preview();"/>
 		
 		<s:Button id="doneButton" label="Done" click="done();"/>
 		

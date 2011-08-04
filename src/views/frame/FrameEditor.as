@@ -27,6 +27,16 @@ public class FrameEditor extends UIComponent
 	
 	//--------------------------------------------------------------------------
 	//
+	//  Static constants
+	//
+	//--------------------------------------------------------------------------
+	
+	private static const CAMERA_WIDTH:Number = 300;
+	
+	private static const CAMERA_HEIGHT:Number = 400;
+	
+	//--------------------------------------------------------------------------
+	//
 	//  Constructor
 	//
 	//--------------------------------------------------------------------------
@@ -103,7 +113,7 @@ public class FrameEditor extends UIComponent
 			return;
 		
 		var scale:Number = Math.min(unscaledWidth / (video.width / video.scaleX),
-			unscaledHeight / (video.height / video.scaleY));
+			unscaledHeight / (video.height / video.scaleY), 0.5);
 		if (Math.abs(video.scaleX - scale) > 0.01)
 		{
 			video.scaleX = scale;
@@ -127,23 +137,20 @@ public class FrameEditor extends UIComponent
 	private function activate():void
 	{
 		if (!camera)
+		{
 			camera = Camera.getCamera();
+			camera.setMode(CAMERA_WIDTH, CAMERA_HEIGHT, camera.fps);
+			camera.setQuality(0, 75);
+		}
 		
-		if (camera) 
+		if (!video)
 		{
-			if (!video)
-			{
-				video = new Video(camera.width, camera.height);
-				addChild(video);
-			}
-			video.attachCamera(camera);
-			invalidateSize();
-			invalidateDisplayList();
+			video = new Video(camera.width, camera.height);
+			addChild(video);
 		}
-		else 
-		{
-			trace("You need a camera.");
-		}
+		video.attachCamera(camera);
+		invalidateSize();
+		invalidateDisplayList();
 	}
 	
 	private function deactivate():void

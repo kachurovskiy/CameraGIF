@@ -25,7 +25,7 @@ public class FrameItemRenderer extends ItemRenderer
 	{
 		super();
 		
-		minWidth = 200;
+		width = 150;
 		autoDrawBackground = false;
 	}
 	
@@ -72,8 +72,8 @@ public class FrameItemRenderer extends ItemRenderer
 		
 		_frame = value;
 		
-		if (frameEditor)
-			frameEditor.frame = _frame;
+		if (_frameEditor)
+			_frameEditor.frame = _frame;
 		frameRenderer.frame = frame;
 	}
 	
@@ -109,9 +109,9 @@ public class FrameItemRenderer extends ItemRenderer
 		if (_frameEditor)
 		{
 			_frameEditor.frame = _frame;
-			_frameEditor.top = 0;
-			_frameEditor.bottom = 0;
-			_frameEditor.minWidth = minWidth;
+			_frameEditor.verticalCenter = 0;
+			_frameEditor.left = 0;
+			_frameEditor.right = 0;
 			addElement(_frameEditor);
 		}
 	}
@@ -121,9 +121,9 @@ public class FrameItemRenderer extends ItemRenderer
 		super.createChildren();
 		
 		frameRenderer = new FrameRenderer();
-		frameRenderer.top = 0;
-		frameRenderer.bottom = 0;
-		frameRenderer.minWidth = minWidth;
+		frameRenderer.verticalCenter = 0;
+		frameRenderer.left = 0;
+		frameRenderer.right = 0;
 		addElement(frameRenderer);
 	}
 	

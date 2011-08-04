@@ -3,19 +3,25 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	viewActivate="view1_viewActivateHandler(event)"
 	viewDeactivate="view1_viewDeactivateHandler(event)" 
-	xmlns:components="components.*">
+	xmlns:components="components.*" actionBarVisible="false">
 	
 	<fx:Script>
 	<![CDATA[
+		import flash.utils.setInterval;
+		import flash.utils.setTimeout;
+		
+		import model.Frame;
 		import model.GIFAnimation;
 		
 		import spark.events.ViewNavigatorEvent;
 		
+		private var frameIndex:int = -1;
+		
 		private function view1_viewActivateHandler(event:ViewNavigatorEvent):void
 		{
-			gifAnimation = GIFAnimation(data);
-			
 			stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE;
+			
+			setNextFrame();
 		}
 		
 		private function view1_viewDeactivateHandler(event:ViewNavigatorEvent):void
@@ -23,9 +29,39 @@
 			stage.displayState == StageDisplayState.NORMAL;
 		}
 		
+		private function setNextFrame():void
+		{
+			if (!stage)
+				return;
+			
+			frameIndex++;
+			
+			if (frameIndex >= gifAnimation.frames.length)
+			{
+				navigator.popView();
+				return;
+			}
+			
+			var frame:Frame = gifAnimation.frames[frameIndex];
+			if (frame.empty)
+			{
+				setNextFrame();
+				return;
+			}
+			
+			bitmapImage.source = frame.bitmapData;
+			setTimeout(setNextFrame, frame.duration);
+		}
+		
 	]]>
 	</fx:Script>
 	
-	<s:Label text="Playing (TODO)" horizontalCenter="0" verticalCenter="0" />
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="0x000000"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:BitmapImage left="0" right="0" top="0" bottom="0" id="bitmapImage" scaleMode="letterbox"/>
 	
 </components:GIFView>

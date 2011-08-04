@@ -30,6 +30,9 @@
 		
 		private function editFrame(frame:Frame):void
 		{
+			if (list.editingFrame && list.editingFrame.empty)
+				removeFrame(list.editingFrame);
+			
 			list.editingFrame = frame;
 		}
 		
@@ -42,6 +45,9 @@
 		
 		private function removeFrame(frame:Frame):void
 		{
+			if (list.editingFrame == frame)
+				list.editingFrame = null;
+			
 			gifAnimation.frames.removeItemAt(gifAnimation.frames.getItemIndex(frame));
 		}
 		
@@ -71,15 +77,27 @@
 	</fx:Script>
 	
 	<frame:FrameList id="list" dataProvider="{gifAnimation.frames}" 
-		left="0" right="50" top="0" bottom="0" contentBackgroundAlpha="0"
+		left="0" right="0" top="0" bottom="50" contentBackgroundAlpha="0"
 		editingFrame="{gitFirstEditingFrame(gifAnimation.frames.length)}"
-		itemRenderer="views.frame.FrameItemRenderer">
+		itemRenderer="views.frame.FrameItemRenderer" verticalScrollPolicy="off">
 		<frame:layout>
-			<s:HorizontalLayout verticalAlign="justify" paddingBottom="10"
-				paddingLeft="10" paddingRight="10" paddingTop="10" gap="10"/>
+			<s:HorizontalLayout verticalAlign="justify" horizontalAlign="center" 
+				paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" gap="10"/>
 		</frame:layout>
 	</frame:FrameList>
 	
-	<s:Button label="+" right="10" verticalCenter="0" click="addFrame();"/>
+	<s:Button label="+" right="-5" verticalCenter="0" click="addFrame();"
+		visible="{!Frame(gifAnimation.frames.getItemAt(gifAnimation.frames.length - 1)).empty}"/>
+	
+	<s:ActionBar left="0" right="0" bottom="0" height="50"/>
+	
+	<components:List id="smallList" left="0" right="0" bottom="0" height="50"
+		itemRenderer="views.frame.SmallFrameItemRenderer" dataProvider="{gifAnimation.frames}"
+		change="list.ensureIndexIsVisible(event.newIndex);" contentBackgroundAlpha="0">
+		<components:layout>
+			<s:HorizontalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
+				paddingTop="5" gap="5" verticalAlign="justify" horizontalAlign="left"/>
+		</components:layout>
+	</components:List>
 	
 </s:Group>

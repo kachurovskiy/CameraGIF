@@ -6,6 +6,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 
 import model.Frame;
+import model.Icons;
 
 import mx.core.UIComponent;
 import mx.graphics.BitmapScaleMode;
@@ -43,23 +44,23 @@ public class FrameRenderer extends Group
 		bitmapImage = new BitmapImage();
 		bitmapImage.scaleMode = BitmapScaleMode.LETTERBOX;
 		bitmapImage.smooth = true;
-		bitmapImage.top = 0;
-		bitmapImage.bottom = 0;
-		bitmapImage.horizontalCenter = 0;
+		bitmapImage.right = 10;
+		bitmapImage.left = 10;
+		bitmapImage.verticalCenter = 0;
 		addElement(bitmapImage);
 		
 		editButton = new Button();
-		editButton.label = "Edit";
+		editButton.setStyle("icon", Icons.instance.edit);
 		editButton.addEventListener(MouseEvent.CLICK, editButton_clickHandler);
-		editButton.left = 10;
-		editButton.bottom = 10;
+		editButton.left = 20;
+		editButton.verticalCenter = -50;
 		addElement(editButton);
 		
 		removeButton = new Button();
-		removeButton.label = "Remove";
+		removeButton.setStyle("icon", Icons.instance.remove);
 		removeButton.addEventListener(MouseEvent.CLICK, removeButton_clickHandler);
-		removeButton.right = 10;
-		removeButton.bottom = 10;
+		removeButton.right = 20;
+		removeButton.verticalCenter = -50;
 		addElement(removeButton);
 	}
 	

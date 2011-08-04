@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" autoDrawBackground="false">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.Frame;
+	]]>
+	</fx:Script>
+	
+	<s:BitmapImage id="bitmapImage" top="0" bottom="0" width="30" 
+		horizontalAlign="center" verticalAlign="middle"
+		source="{Frame(data).bitmapData}" scaleMode="letterbox"/>
+	
+</s:ItemRenderer>
