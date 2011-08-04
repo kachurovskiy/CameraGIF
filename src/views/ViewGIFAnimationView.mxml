@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:GIFView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	viewActivate="view1_viewActivateHandler(event)"
+	viewDeactivate="view1_viewDeactivateHandler(event)" 
+	xmlns:components="components.*">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.GIFAnimation;
+		
+		import spark.events.ViewNavigatorEvent;
+		
+		private function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+		{
+			gifAnimation = GIFAnimation(data);
+			
+			stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE;
+		}
+		
+		private function view1_viewDeactivateHandler(event:ViewNavigatorEvent):void
+		{
+			stage.displayState == StageDisplayState.NORMAL;
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:Label text="Playing (TODO)" horizontalCenter="0" verticalCenter="0" />
+	
+</components:GIFView>

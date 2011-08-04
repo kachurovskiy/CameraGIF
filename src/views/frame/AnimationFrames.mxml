@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:components="components.*" 
+	xmlns:frame="views.frame.*"
+	initialize="init();">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.Frame;
+		import model.GIFAnimation;
+		
+		[Bindable]
+		public var gifAnimation:GIFAnimation;
+		
+		private function init():void
+		{
+			addEventListener(FrameEvent.FRAME_EDIT, frameEditHandler);
+			addEventListener(FrameEvent.FRAME_EDITED, frameEditedHandler);
+			addEventListener(FrameEvent.FRAME_REMOVE, frameRemoveHandler);
+		}
+		
+		private function addFrame():void
+		{
+			var frame:Frame = new Frame();
+			gifAnimation.frames.addItem(frame);
+			
+			list.editingFrame = frame;
+		}
+		
+		private function editFrame(frame:Frame):void
+		{
+			list.editingFrame = frame;
+		}
+		
+		private function finishFrameEditing(frame:Frame):void
+		{
+			list.editingFrame = null;
+			
+			addFrame();
+		}
+		
+		private function removeFrame(frame:Frame):void
+		{
+			gifAnimation.frames.removeItemAt(gifAnimation.frames.getItemIndex(frame));
+		}
+		
+		private function gitFirstEditingFrame(length:int):Frame
+		{
+			if (length == 1)
+				return gifAnimation.frames[0];
+			return list ? list.editingFrame : null;
+		}
+		
+		private function frameEditHandler(event:FrameEvent):void
+		{
+			editFrame(event.frame);
+		}
+		
+		private function frameEditedHandler(event:FrameEvent):void
+		{
+			finishFrameEditing(event.frame);
+		}
+		
+		private function frameRemoveHandler(event:FrameEvent):void
+		{
+			removeFrame(event.frame);
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<frame:FrameList id="list" dataProvider="{gifAnimation.frames}" 
+		left="0" right="50" top="0" bottom="0" contentBackgroundAlpha="0"
+		editingFrame="{gitFirstEditingFrame(gifAnimation.frames.length)}"
+		itemRenderer="views.frame.FrameItemRenderer">
+		<frame:layout>
+			<s:HorizontalLayout verticalAlign="justify" paddingBottom="10"
+				paddingLeft="10" paddingRight="10" paddingTop="10" gap="10"/>
+		</frame:layout>
+	</frame:FrameList>
+	
+	<s:Button label="+" right="10" verticalCenter="0" click="addFrame();"/>
+	
+</s:Group>

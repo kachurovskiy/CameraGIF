@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:GIFView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	title="Edit animation" 
+	xmlns:components="components.*" 
+	xmlns:views="views.*" xmlns:frame="views.frame.*">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.GIFAnimation;
+		import model.GIFAnimationStorage;
+		
+		import spark.events.ViewNavigatorEvent;
+		
+		private function preview():void
+		{
+			navigator.pushView(ViewGIFAnimationView, gifAnimation);
+		}
+		
+		private function done():void
+		{
+			navigator.pushView(NameAnimationView, gifAnimation);
+		}
+		
+		override protected function viewActivateHandler(event:ViewNavigatorEvent):void
+		{
+			if (!data)
+				data = GIFAnimationStorage.instance.getNewGIFAnimation();
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<components:layout>
+		<s:VerticalLayout gap="0" horizontalAlign="justify"/>
+	</components:layout>
+	
+	<frame:AnimationFrames id="animationFrames" height="100%" gifAnimation="{gifAnimation}"/>
+	
+	<components:ViewControlbar visible="{gifAnimation &amp;&amp; !gifAnimation.empty}" 
+		includeInLayout="{gifAnimation &amp;&amp; !gifAnimation.empty}">
+		
+		<s:Button label="Preview" click="preview();"/>
+		
+		<s:Button id="doneButton" label="Done" click="done();"/>
+		
+	</components:ViewControlbar>
+	
+</components:GIFView>
