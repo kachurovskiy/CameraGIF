@@ -8,7 +8,7 @@
 		
 		private function createNewAnimation():void
 		{
-			navigator.pushView(CreateNewAnimationView);
+			navigator.pushView(EditAnimationView);
 		}
 		
 	]]>

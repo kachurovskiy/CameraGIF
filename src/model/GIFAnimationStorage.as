@@ -13,6 +13,8 @@ public class GIFAnimationStorage
 	
 	private static const SHARED_OBJECT_NAME:String = "GIFs";
 	
+	private static const ANIMATION_NAME_PREFIX:String = "Animation";
+	
 	private static var _instance:GIFAnimationStorage;
 	
 	public static function get instance():GIFAnimationStorage
@@ -80,6 +82,31 @@ public class GIFAnimationStorage
 		}
 		
 		save();
+	}
+	
+	public function getNewGIFAnimationName():String
+	{
+		var nameMap:Object = {};
+		for each (var item:GIFAnimation in items)
+		{
+			nameMap[item.name] = item;
+		}
+		
+		for (var i:int = 1; ; i++)
+		{
+			var name:String = ANIMATION_NAME_PREFIX + " " + i;
+			if (!nameMap[name])
+				return name;
+		}
+		
+		return null;
+	}
+	
+	public function getNewGIFAnimation():GIFAnimation
+	{
+		var gifAnimation:GIFAnimation = new GIFAnimation(getNewGIFAnimationName());
+		gifAnimation.frames.addItem(new Frame());
+		return gifAnimation;
 	}
 	
 }
