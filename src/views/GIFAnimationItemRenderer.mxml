@@ -78,7 +78,7 @@
 	]]>
 	</fx:Script>
 	
-	<s:Rect left="-2" right="-2" top="-2" bottom="-2" radiusX="10" visible="{selected}">
+	<s:Rect left="-2" right="-2" top="-2" bottom="-2" radiusX="12" visible="{selected}">
 		<s:fill>
 			<s:SolidColor color="0xFFCC00"/>
 		</s:fill>

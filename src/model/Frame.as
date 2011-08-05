@@ -6,6 +6,7 @@ import flash.display.Loader;
 import flash.display.LoaderInfo;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.geom.Point;
 import flash.utils.ByteArray;
 
 import mx.graphics.codec.JPEGEncoder;
@@ -114,6 +115,11 @@ public class Frame extends EventDispatcher
 		var loader:Loader = new Loader();
 		loader.contentLoaderInfo.addEventListener(Event.INIT, loader_initHandler);
 		loader.loadBytes(value);
+	}
+	
+	public function ensureBitmapDataCreated(size:Point):void
+	{
+		// for photo frames bitmap data is always accessible
 	}
 	
 	//--------------------------------------------------------------------------

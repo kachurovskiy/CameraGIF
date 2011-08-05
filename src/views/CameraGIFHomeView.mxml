@@ -3,13 +3,48 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:views="views.*" title="CameraGIF: Home" 
 	currentState="{getState(GIFAnimationStorage.instance.items.length)}" 
-	xmlns:components="components.*">
+	xmlns:components="components.*" initialize="init();" 
+	backKeyPressed="event.preventDefault();">
 	
 	<fx:Script>
 	<![CDATA[
+		import actions.ShareAnimationAction;
+		
+		import flash.net.navigateToURL;
+		import flash.utils.getTimer;
+		import flash.utils.setInterval;
+		
 		import model.GIFAnimation;
 		import model.GIFAnimationStorage;
 		import model.Icons;
+		import model.Message;
+		import model.Settings;
+		
+		import mx.collections.ArrayCollection;
+		import mx.events.ResizeEvent;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		[Bindable]
+		private var busy:Boolean = false;
+		
+		[Bindable]
+		private var messages:ArrayCollection = new ArrayCollection();
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		private function init():void
+		{
+			setInterval(removeOldMessages, 1000);
+		}
 		
 		private function getState(length:int):String
 		{
@@ -33,12 +68,59 @@
 		
 		private function shareAnimation(gifAnimation:GIFAnimation):void
 		{
-			navigator.pushView(ShareAnimationView, gifAnimation);
+			busy = true;
+			
+			var action:ShareAnimationAction = new ShareAnimationAction();
+			action.addEventListener(Event.COMPLETE, shareAction_completeHandler);
+			action.addEventListener(ErrorEvent.ERROR, shareAction_errorHandler);
+			action.start(gifAnimation);
 		}
 		
 		private function removeAnimation(gifAnimation:GIFAnimation):void
 		{
 			GIFAnimationStorage.instance.remove(gifAnimation);
+		}
+		
+		private function removeOldMessages():void
+		{
+			var n:int = messages.length;
+			for (var i:int = n - 1; i >= 0; i--)
+			{
+				var message:Message = messages[i];
+				if (message.creationTime + message.lifetime < getTimer())
+					messages.removeItemAt(i);
+			}
+		}
+		
+		private function openMessage(index:int):void
+		{
+			if (index == -1)
+				return;
+			
+			var message:Message = messages[index];
+			if (message.url)
+				navigateToURL(new URLRequest(message.url), "_self");
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event handlers
+		//
+		//--------------------------------------------------------------------------
+		
+		private function shareAction_completeHandler(event:Event):void
+		{
+			busy = false;
+			
+			messages.addItem(new Message("Sharing is completed successfuly, " +
+				"click to see results", false, 10000, ShareAnimationAction(event.target).url));
+		}
+		
+		private function shareAction_errorHandler(event:ErrorEvent):void
+		{
+			busy = false;
+			
+			messages.addItem(new Message(event.text, true));
 		}
 		
 	]]>
@@ -49,32 +131,44 @@
 		<s:State name="empty"/>
 	</s:states>
 	
-	<s:layout>
-		<s:VerticalLayout horizontalAlign="justify" verticalAlign="middle" gap="0"/>
-	</s:layout>
-	
-	<s:Group>
+	<s:VGroup horizontalAlign="justify" verticalAlign="middle" gap="0" width="100%" height="100%"
+		enabled="{!busy}">
+		
+		<s:Group>
+				
+			<s:Button label="Create new animation" click="createNewAnimation();"
+				height.empty="100" left="10" right="10" top="10" bottom="10"/>
+				
+		</s:Group>
+		
+		<views:ExistingAnimations id="animations" height="100%" gifaView="viewAnimation(event.gifAnimation);"
+			includeIn="normal"/>
+		
+		<s:List id="messageList" dataProvider="{messages}" borderVisible="false" 
+			itemRenderer="views.MessageItemRenderer" contentBackgroundAlpha="0"
+			change="openMessage(event.newIndex)">
+			<s:layout>
+				<s:VerticalLayout gap="0" horizontalAlign="justify"/>
+			</s:layout>
+		</s:List>
+		
+		<components:ViewControlbar id="viewControlbar" includeIn="normal"
+			enabled="{animations.selectedGIFAnimation != null}">
 			
-		<s:Button label="Create new animation" click="createNewAnimation();"
-			height.empty="100" left="10" right="10" top="10" bottom="10"/>
+			<s:Button label="View" click="viewAnimation(animations.selectedGIFAnimation)"/>
 			
-	</s:Group>
-	
-	<views:ExistingAnimations id="animations" height="100%" gifaView="viewAnimation(event.gifAnimation);"
-		includeIn="normal"/>
-	
-	<components:ViewControlbar includeIn="normal"
-		enabled="{animations.selectedGIFAnimation != null}">
-		
-		<s:Button label="View" click="viewAnimation(animations.selectedGIFAnimation)"/>
-		
-		<s:Button label="Edit" click="editAnimation(animations.selectedGIFAnimation)"/>
-		
-		<s:Button label="Share" click="shareAnimation(animations.selectedGIFAnimation)"/>
-		
-		<s:Button icon="{Icons.instance.remove}" 
-			click="removeAnimation(animations.selectedGIFAnimation)"/>
+			<s:Button label="Edit" click="editAnimation(animations.selectedGIFAnimation)"/>
 			
-	</components:ViewControlbar>
+			<s:Button label="Share" click="shareAnimation(animations.selectedGIFAnimation)"/>
+			
+			<s:Button icon="{Icons.instance.remove}" 
+				click="removeAnimation(animations.selectedGIFAnimation)"/>
+				
+		</components:ViewControlbar>
+		
+	</s:VGroup>
+	
+	<s:BusyIndicator horizontalCenter="0" verticalCenter="0" id="busyIndicator"
+		visible="{busy}"/>
 	
 </s:View>

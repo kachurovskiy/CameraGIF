@@ -13,6 +13,9 @@
 		[Bindable]
 		public var gifAnimation:GIFAnimation;
 		
+		[Bindable]
+		public var showSmallList:Boolean = true;
+		
 		private function init():void
 		{
 			addEventListener(FrameEvent.FRAME_EDIT, frameEditHandler);
@@ -77,7 +80,7 @@
 	</fx:Script>
 	
 	<frame:FrameList id="list" dataProvider="{gifAnimation.frames}" 
-		left="0" right="0" top="0" bottom="50" contentBackgroundAlpha="0"
+		left="0" right="0" top="0" bottom="{showSmallList ? 50 : 0}" contentBackgroundAlpha="0"
 		editingFrame="{gitFirstEditingFrame(gifAnimation.frames.length)}"
 		itemRenderer="views.frame.FrameItemRenderer" verticalScrollPolicy="off">
 		<frame:layout>
@@ -89,11 +92,13 @@
 	<s:Button label="+" right="-5" verticalCenter="0" click="addFrame();"
 		visible="{!Frame(gifAnimation.frames.getItemAt(gifAnimation.frames.length - 1)).empty}"/>
 	
-	<s:ActionBar left="0" right="0" bottom="0" height="50"/>
+	<s:ActionBar left="0" right="0" bottom="0" height="50"
+		visible="{showSmallList}" includeInLayout="{showSmallList}"/>
 	
 	<components:List id="smallList" left="0" right="0" bottom="0" height="50"
 		itemRenderer="views.frame.SmallFrameItemRenderer" dataProvider="{gifAnimation.frames}"
-		change="list.ensureIndexIsVisible(event.newIndex);" contentBackgroundAlpha="0">
+		change="list.ensureIndexIsVisible(event.newIndex);" contentBackgroundAlpha="0"
+		visible="{showSmallList}" includeInLayout="{showSmallList}">
 		<components:layout>
 			<s:HorizontalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
 				paddingTop="5" gap="5" verticalAlign="justify" horizontalAlign="left"/>

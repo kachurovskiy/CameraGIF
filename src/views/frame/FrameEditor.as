@@ -8,6 +8,7 @@ import flash.media.Camera;
 import flash.media.Video;
 
 import model.Frame;
+import model.Settings;
 
 import mx.core.UIComponent;
 
@@ -24,16 +25,6 @@ import spark.components.Group;
  */
 public class FrameEditor extends UIComponent
 {
-	
-	//--------------------------------------------------------------------------
-	//
-	//  Static constants
-	//
-	//--------------------------------------------------------------------------
-	
-	private static const CAMERA_WIDTH:Number = 300;
-	
-	private static const CAMERA_HEIGHT:Number = 400;
 	
 	//--------------------------------------------------------------------------
 	//
@@ -139,7 +130,7 @@ public class FrameEditor extends UIComponent
 		if (!camera)
 		{
 			camera = Camera.getCamera();
-			camera.setMode(CAMERA_WIDTH, CAMERA_HEIGHT, camera.fps);
+			camera.setMode(Settings.CAMERA_WIDTH, Settings.CAMERA_HEIGHT, camera.fps);
 			camera.setQuality(0, 75);
 		}
 		

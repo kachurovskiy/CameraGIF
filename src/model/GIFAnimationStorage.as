@@ -2,6 +2,7 @@ package model
 {
 import flash.events.EventDispatcher;
 import flash.net.SharedObject;
+import flash.utils.setTimeout;
 
 import mx.collections.ArrayCollection;
 import mx.collections.IList;
@@ -66,7 +67,7 @@ public class GIFAnimationStorage extends EventDispatcher
 	
 	public function save():void
 	{
-		sharedObject.flush();
+		setTimeout(sharedObject.flush, 50);
 	}
 	
 	public function add(gifAnimation:GIFAnimation):void

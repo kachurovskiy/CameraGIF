@@ -5,14 +5,20 @@
 	xmlns:views="views.*" 
 	xmlns:frame="views.frame.*"
 	title="Edit animation" defaultButton="{previewButton}"
-	viewDeactivate="gifAnimation.removeEmptyFrames();">
+	viewDeactivate="gifAnimation.removeEmptyFrames();"
+	actionBarVisible="{enoughHeight}" resize="checkHeight();" 
+	creationComplete="checkHeight();">
 	
 	<fx:Script>
 	<![CDATA[
 		import model.GIFAnimation;
 		import model.GIFAnimationStorage;
+		import model.Settings;
 		
 		import spark.events.ViewNavigatorEvent;
+		
+		[Bindable]
+		private var enoughHeight:Boolean = true;
 		
 		private function preview():void
 		{
@@ -22,6 +28,15 @@
 		private function done():void
 		{
 			navigator.pushView(NameAnimationView, gifAnimation);
+		}
+		
+		private function checkHeight():void
+		{
+			if (!initialized)
+				return;
+			
+			enoughHeight = height > (Settings.CAMERA_HEIGHT / 2 + 100 + 
+				(actionBarVisible ? 0 : 50));
 		}
 		
 		override protected function viewActivateHandler(event:ViewNavigatorEvent):void
@@ -37,7 +52,8 @@
 		<s:VerticalLayout gap="0" horizontalAlign="justify"/>
 	</components:layout>
 	
-	<frame:AnimationFrames id="animationFrames" height="100%" gifAnimation="{gifAnimation}"/>
+	<frame:AnimationFrames id="animationFrames" height="100%" gifAnimation="{gifAnimation}"
+		showSmallList="{enoughHeight}"/>
 	
 	<components:ViewControlbar enabled="{gifAnimation &amp;&amp; !gifAnimation.empty}">
 		
