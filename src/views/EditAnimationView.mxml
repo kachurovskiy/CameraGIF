@@ -35,7 +35,7 @@
 			if (!initialized)
 				return;
 			
-			enoughHeight = height > (Settings.CAMERA_HEIGHT / 2 + 100 + 
+			enoughHeight = height > (Settings.instance.cameraHeight / 2 + 100 + 
 				(actionBarVisible ? 0 : 50));
 		}
 		

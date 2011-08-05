@@ -11,7 +11,6 @@ package org.bytearray.gif.encoder
 	import flash.utils.ByteArray;
 	import flash.display.BitmapData;
 	import flash.display.Bitmap;
-	import org.bytearray.gif.encoder.NeuQuant
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLRequest;

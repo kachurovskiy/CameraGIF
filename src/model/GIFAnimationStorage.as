@@ -67,7 +67,7 @@ public class GIFAnimationStorage extends EventDispatcher
 	
 	public function save():void
 	{
-		setTimeout(sharedObject.flush, 50);
+		// shared objects are auto-saved
 	}
 	
 	public function add(gifAnimation:GIFAnimation):void

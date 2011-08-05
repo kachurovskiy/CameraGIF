@@ -167,14 +167,14 @@ public class GIFAnimation extends EventDispatcher
 		var encoder:GIFEncoder = new GIFEncoder();
 		encoder.start();
 		// we call the setRepeat method with 0 as parameter so that it loops
-		encoder.setRepeat(0);
+		encoder.setRepeat(Settings.instance.gifRepeat);
+		encoder.setDelay(Settings.instance.frameDuration * 1000);
 		for each (var frame:Frame in frames)
 		{
 			if (frame.empty)
 				continue;
 			
 			frame.ensureBitmapDataCreated(size);
-			encoder.setDelay(frame.duration);
 			encoder.addFrame(frame.bitmapData);
 		}
 		encoder.finish();

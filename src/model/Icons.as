@@ -39,5 +39,13 @@ public class Icons extends EventDispatcher
 	[Embed("icons/error.png")]
 	public var error:Class;
 	
+	[Bindable("__NoChangeEvent__")]
+	[Embed("icons/cog.png")]
+	public var cog:Class;
+	
+	[Bindable("__NoChangeEvent__")]
+	[Embed("icons/cross.png")]
+	public var cross:Class;
+	
 }
 }

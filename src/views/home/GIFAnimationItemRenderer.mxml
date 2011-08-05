@@ -8,7 +8,7 @@
 		/**
 		 * Dispatched when renderer is clicked.
 		 */
-		[Event(name="gifaView", type="views.GIFAnimationEvent")]
+		[Event(name="gifaView", type="views.home.GIFAnimationEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>

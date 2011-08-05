@@ -1,4 +1,4 @@
-package views
+package views.home
 {
 import flash.events.Event;
 

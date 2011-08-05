@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	firstView="views.CameraGIFHomeView" applicationDPI="160">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	firstView="views.home.CameraGIFHomeView" applicationDPI="160">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.Icons;
+		
+		import views.SettingsView;
+		
+		private function openSettings():void
+		{
+			navigator.pushView(SettingsView);
+		}
+		
+		private function exit():void
+		{
+			NativeApplication.nativeApplication.exit();
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		s|NumericStepper
+		{
+			skinClass: ClassReference("com.indecentmonkey.MobileNumStepSkin");
+		}
+		
+		.stackedForm s|FormItem
+		{
+			skinClass: ClassReference("spark.skins.spark.StackedFormItemSkin");
+		}
+		
+	</fx:Style>
+	
+	<s:actionContent>
+		
+		<s:Button icon="{Icons.instance.cog}" click="openSettings();"/>
+		
+		<s:Button icon="{Icons.instance.cross}" click="exit();"/>
+		
+	</s:actionContent>
+	
 </s:ViewNavigatorApplication>

@@ -12,6 +12,7 @@
 		
 		import model.Frame;
 		import model.GIFAnimation;
+		import model.Settings;
 		
 		import spark.events.ViewNavigatorEvent;
 		
@@ -50,7 +51,7 @@
 			}
 			
 			bitmapImage.source = frame.bitmapData;
-			setTimeout(setNextFrame, frame.duration);
+			setTimeout(setNextFrame, Settings.instance.frameDuration * 1000);
 		}
 		
 	]]>

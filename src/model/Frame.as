@@ -37,8 +37,6 @@ public class Frame extends EventDispatcher
 	
 	private var encoder:JPEGEncoder = new JPEGEncoder(75);
 	
-	public var duration:Number = 2000;
-	
 	[Bindable]
 	public var generation:int = 0;
 	

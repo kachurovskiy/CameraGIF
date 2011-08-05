@@ -4,7 +4,7 @@
 	xmlns:views="views.*" title="CameraGIF: Home" 
 	currentState="{getState(GIFAnimationStorage.instance.items.length)}" 
 	xmlns:components="components.*" initialize="init();" 
-	backKeyPressed="event.preventDefault();">
+	backKeyPressed="backKeyPressedHandler(event)" xmlns:home="views.home.*">
 	
 	<fx:Script>
 	<![CDATA[
@@ -21,7 +21,11 @@
 		import model.Settings;
 		
 		import mx.collections.ArrayCollection;
+		import mx.events.FlexEvent;
 		import mx.events.ResizeEvent;
+		
+		import views.EditAnimationView;
+		import views.ViewAnimationView;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -123,6 +127,11 @@
 			messages.addItem(new Message(event.text, true));
 		}
 		
+		private function backKeyPressedHandler(event:FlexEvent):void
+		{
+			NativeApplication.nativeApplication.exit();
+		}
+		
 	]]>
 	</fx:Script>
 	
@@ -141,11 +150,11 @@
 				
 		</s:Group>
 		
-		<views:ExistingAnimations id="animations" height="100%" gifaView="viewAnimation(event.gifAnimation);"
+		<home:ExistingAnimations id="animations" height="100%" gifaView="viewAnimation(event.gifAnimation);"
 			includeIn="normal"/>
 		
 		<s:List id="messageList" dataProvider="{messages}" borderVisible="false" 
-			itemRenderer="views.MessageItemRenderer" contentBackgroundAlpha="0"
+			itemRenderer="views.home.MessageItemRenderer" contentBackgroundAlpha="0"
 			change="openMessage(event.newIndex)">
 			<s:layout>
 				<s:VerticalLayout gap="0" horizontalAlign="justify"/>

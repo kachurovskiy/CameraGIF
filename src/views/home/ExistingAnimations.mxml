@@ -6,7 +6,7 @@
 		/**
 		* Dispatched when renderer is clicked.
 		*/
-		[Event(name="gifaView", type="views.GIFAnimationEvent")]
+		[Event(name="gifaView", type="views.home.GIFAnimationEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -24,7 +24,7 @@
 	</fx:Script>
 	
 	<s:List id="list" dataProvider="{GIFAnimationStorage.instance.items}"
-		itemRenderer="views.GIFAnimationItemRenderer" contentBackgroundAlpha="0"
+		itemRenderer="views.home.GIFAnimationItemRenderer" contentBackgroundAlpha="0"
 		change="dispatchEvent(new Event(Event.CHANGE))">
 		<s:layout>
 			<s:TileLayout horizontalGap="10" verticalGap="10"

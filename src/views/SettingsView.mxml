@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" title="Settings" 
+	xmlns:components="components.*" viewDeactivate="Settings.instance.save();">
+	
+	<fx:Script>
+	<![CDATA[
+		import model.Settings;
+		
+		private function secondsFormatFunction(value:*):String
+		{
+			return String(value) + " s";
+		}
+		
+		private function pxFormatFunction(value:*):String
+		{
+			return String(value) + " px";
+		}
+		
+		private function percentFormatFunction(value:*):String
+		{
+			return String(value) + " %";
+		}
+		
+		private function valueParseFunction(value:String):Number
+		{
+			var n:int = value.length;
+			for (var i:int = 0; i < n; i++)
+			{
+				if (value.charAt(i) < "0" || value.charAt(i) > "9")
+				{
+					value = value.substr(0, i);
+					break;
+				}
+			}
+			return isNaN(Number(value)) ? 0 : Number(value);
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify" gap="0"/>
+	</s:layout>
+	
+	<s:Scroller height="100%" horizontalScrollPolicy="off">
+		
+		<s:Group>
+			
+			<s:Form styleName="stackedForm">
+				
+				<s:FormItem label="Camera width">
+					
+					<s:NumericStepper value="@{Settings.instance.cameraWidth}" stepSize="50"
+						minimum="{Settings.CAMERA_SIZE_MIN}"
+						maximum="{Settings.CAMERA_SIZE_MAX}"
+						valueFormatFunction="{pxFormatFunction}"
+						valueParseFunction="{valueParseFunction}"/>
+					
+				</s:FormItem>
+				
+				<s:FormItem label="Camera height">
+					
+					<s:NumericStepper value="@{Settings.instance.cameraHeight}" stepSize="50"
+						minimum="{Settings.CAMERA_SIZE_MIN}" 
+						maximum="{Settings.CAMERA_SIZE_MAX}"
+						valueFormatFunction="{pxFormatFunction}"
+						valueParseFunction="{valueParseFunction}"/>
+					
+				</s:FormItem>
+				
+				<s:FormItem label="Frame duration">
+					
+					<s:NumericStepper value="@{Settings.instance.frameDuration}" stepSize="0.5"
+						minimum="{Settings.FRAME_DURATION_MIN}" 
+						maximum="{Settings.FRAME_DURATION_MAX}"
+						valueFormatFunction="{secondsFormatFunction}"
+						valueParseFunction="{valueParseFunction}"/>
+					
+				</s:FormItem>
+				
+				<s:FormItem label="JPEG Quality">
+					
+					<s:NumericStepper value="@{Settings.instance.jpegQuality}" stepSize="10"
+						minimum="0" maximum="100"
+						valueFormatFunction="{percentFormatFunction}"
+						valueParseFunction="{valueParseFunction}"/>
+					
+				</s:FormItem>
+				
+				<s:FormItem label="Camera Quality">
+					
+					<s:NumericStepper value="@{Settings.instance.cameraQuality}" stepSize="10"
+						minimum="0" maximum="100"
+						valueFormatFunction="{percentFormatFunction}"
+						valueParseFunction="{valueParseFunction}"/>
+					
+				</s:FormItem>
+				
+			</s:Form>
+			
+		</s:Group>
+		
+	</s:Scroller>
+		
+	<components:ViewControlbar>
+		
+		<s:Button label="Complete" click="navigator.popView();"/>
+		
+	</components:ViewControlbar>
+	
+</s:View>

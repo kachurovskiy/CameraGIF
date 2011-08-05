@@ -128,11 +128,11 @@ public class FrameEditor extends UIComponent
 	private function activate():void
 	{
 		if (!camera)
-		{
 			camera = Camera.getCamera();
-			camera.setMode(Settings.CAMERA_WIDTH, Settings.CAMERA_HEIGHT, camera.fps);
-			camera.setQuality(0, 75);
-		}
+		
+		camera.setMode(Settings.instance.cameraWidth, 
+			Settings.instance.cameraHeight, camera.fps);
+		camera.setQuality(0, Settings.instance.cameraQuality);
 		
 		if (!video)
 		{
