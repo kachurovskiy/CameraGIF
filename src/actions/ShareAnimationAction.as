@@ -15,10 +15,12 @@ public class ShareAnimationAction extends EventDispatcher
 {
 	
 	private var gifAnimation:GIFAnimation;
+
+	private var _url:String = "http://facebook.com";
 	
 	public function get url():String
 	{
-		return "http://facebook.com";
+		return _url;
 	}
 	
 	public function start(gifAnimation:GIFAnimation):void
@@ -60,7 +62,7 @@ public class ShareAnimationAction extends EventDispatcher
 				link: String(gifAnimation.imgurXML.links.original),
 				message: gifAnimation.name
 			};
-		FacebookMobile.api("/me/feed", linksCallback, values);
+		FacebookMobile.api("/me/feed", linksCallback, values, "POST");
 	}
 	
 	private function finish(fail:Object):void
