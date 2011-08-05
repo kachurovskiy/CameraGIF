@@ -47,5 +47,9 @@ public class Icons extends EventDispatcher
 	[Embed("icons/cross.png")]
 	public var cross:Class;
 	
+	[Bindable("__NoChangeEvent__")]
+	[Embed("icons/rotate.png")]
+	public var rotate:Class;
+	
 }
 }

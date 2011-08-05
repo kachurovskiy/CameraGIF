@@ -44,7 +44,7 @@
 		
 		private function updateBitmapImage():void
 		{
-			if (!gifAnimation)
+			if (!gifAnimation || gifAnimation.frames.length == 0)
 				return;
 			
 			var bitmapData:BitmapData = Frame(gifAnimation.frames[0]).bitmapData;
