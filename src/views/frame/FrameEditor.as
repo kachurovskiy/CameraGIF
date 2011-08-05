@@ -98,8 +98,8 @@ public class FrameEditor extends UIComponent
 		measuredMinHeight = 0;
 		if (camera)
 		{
-			measuredWidth = camera.width;
-			measuredHeight = camera.height;
+			measuredWidth = videoContainer.width;
+			measuredHeight = videoContainer.height;
 		}
 	}
 	
@@ -113,8 +113,9 @@ public class FrameEditor extends UIComponent
 		video.x = - video.width / 2;
 		video.y = - video.height / 2;
 		
-		var scale:Number = Math.min(unscaledWidth / videoContainer.width / videoContainer.scaleX,
-			unscaledHeight / videoContainer.height / videoContainer.scaleY, 0.5);
+		var suggestedScaleX:Number = unscaledWidth / videoContainer.width / videoContainer.scaleX;
+		var suggestedScaleY:Number = unscaledHeight / videoContainer.height / videoContainer.scaleY;
+		var scale:Number = Math.min(suggestedScaleX, suggestedScaleY, 0.5);
 		if (Math.abs(videoContainer.scaleX - scale) > 0.01)
 		{
 			videoContainer.scaleX = scale;
@@ -224,6 +225,7 @@ public class FrameEditor extends UIComponent
 	{
 		videoContainer.rotation += 90;
 		invalidateDisplayList();
+		invalidateSize();
 	}
 	
 }

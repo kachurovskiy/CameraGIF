@@ -6,10 +6,15 @@ import flash.display.Loader;
 import flash.display.LoaderInfo;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
 import flash.geom.Point;
+import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
 import mx.graphics.codec.JPEGEncoder;
+import mx.utils.UIDUtil;
 
 [RemoteClass]
 /**
@@ -17,6 +22,22 @@ import mx.graphics.codec.JPEGEncoder;
  */
 public class Frame extends EventDispatcher
 {
+	
+	//--------------------------------------------------------------------------
+	//
+	//  Static methods
+	//
+	//--------------------------------------------------------------------------
+	
+	public static function getFileURL(uid:String):String
+	{
+		return "app-storage://" + getFileAppStorageRelativePath(uid);
+	}
+	
+	public static function getFileAppStorageRelativePath(uid:String):String
+	{
+		return "photos/" + uid + ".jpg";
+	}
 	
 	//--------------------------------------------------------------------------
 	//
@@ -47,14 +68,31 @@ public class Frame extends EventDispatcher
 	//--------------------------------------------------------------------------
 	
 	//--------------------------------------
+	//  uid
+	//--------------------------------------
+	
+	private var _uid:String;
+	
+	public function get uid():String 
+	{
+		return _uid;
+	}
+	
+	public function set uid(value:String):void
+	{
+		if (_uid == value)
+			return;
+		
+		_uid = value;
+		readFromFile();
+	}
+	
+	//--------------------------------------
 	//  bitmapData
 	//--------------------------------------
 	
 	private var _bitmapData:BitmapData;
 	
-	/**
-	 * BitmapData can not be restored from AMF.
-	 */
 	[Transient]
 	[Bindable("bitmapDataChange")]
 	public function get bitmapData():BitmapData
@@ -67,9 +105,9 @@ public class Frame extends EventDispatcher
 		if (_bitmapData == value)
 			return;
 		
-		_bitmapData = value;
+		setBitmapDataWithoutWritingFile(value);
 		generation++;
-		dispatchEvent(new Event("bitmapDataChange"));
+		writeToFile();
 	}
 	
 	//----------------------------------
@@ -87,6 +125,7 @@ public class Frame extends EventDispatcher
 	//  bitmapBytes
 	//--------------------------------------
 	
+	[Transient]
 	public function get bitmapBytes():ByteArray 
 	{
 		if (!_bitmapData)
@@ -96,28 +135,53 @@ public class Frame extends EventDispatcher
 		return encoder.encode(_bitmapData);
 	}
 	
+	//----------------------------------
+	//  file
+	//----------------------------------
+	
+	private var _file:File;
+	
+	[Bindable("__NoChangeEvent__")]
+	public function get file():File
+	{
+		var file:File = File.applicationStorageDirectory.resolvePath(
+			getFileAppStorageRelativePath(_uid));
+		return file;
+	}
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Methods
 	//
 	//--------------------------------------------------------------------------
 	
-	public function set bitmapBytes(value:ByteArray):void
+	private function setUIDWithoutFileLoading(value:String):void
 	{
-		if (!value)
-		{
-			_bitmapData = null;
-			return;
-		}
-		
-		var loader:Loader = new Loader();
-		loader.contentLoaderInfo.addEventListener(Event.INIT, loader_initHandler);
-		loader.loadBytes(value);
+		_uid = value;
 	}
 	
-	public function ensureBitmapDataCreated(size:Point):void
+	private function setBitmapDataWithoutWritingFile(value:BitmapData):void
 	{
-		// for photo frames bitmap data is always accessible
+		_bitmapData = value;
+		dispatchEvent(new Event("bitmapDataChange"));
+	}
+	
+	private function readFromFile():void
+	{
+		var loader:Loader = new Loader();
+		loader.contentLoaderInfo.addEventListener(Event.INIT, loader_initHandler);
+		loader.load(new URLRequest(file.url));
+	}
+	
+	private function writeToFile():void
+	{
+		if (!_uid)
+			_uid = UIDUtil.createUID();
+		
+		var fileStream:FileStream = new FileStream();
+		fileStream.openAsync(file, FileMode.WRITE);
+		fileStream.writeBytes(bitmapBytes);
+		fileStream.close();
 	}
 	
 	//--------------------------------------------------------------------------
@@ -128,7 +192,7 @@ public class Frame extends EventDispatcher
 	
 	private function loader_initHandler(event:Event):void
 	{
-		bitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
+		setBitmapDataWithoutWritingFile(Bitmap(LoaderInfo(event.target).content).bitmapData);
 	}
 	
 }

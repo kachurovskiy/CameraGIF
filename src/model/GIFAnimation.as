@@ -174,7 +174,6 @@ public class GIFAnimation extends EventDispatcher
 			if (frame.empty)
 				continue;
 			
-			frame.ensureBitmapDataCreated(size);
 			encoder.addFrame(frame.bitmapData);
 		}
 		encoder.finish();
