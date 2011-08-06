@@ -23,7 +23,7 @@
 			addEventListener(FrameEvent.FRAME_REMOVE, frameRemoveHandler);
 		}
 		
-		private function addFrame():void
+		public function addFrame():void
 		{
 			var frame:Frame = new Frame();
 			gifAnimation.frames.addItem(frame);
@@ -31,7 +31,7 @@
 			list.editingFrame = frame;
 		}
 		
-		private function editFrame(frame:Frame):void
+		public function editFrame(frame:Frame):void
 		{
 			if (list.editingFrame && list.editingFrame.empty)
 				removeFrame(list.editingFrame);
@@ -52,13 +52,6 @@
 				list.editingFrame = null;
 			
 			gifAnimation.frames.removeItemAt(gifAnimation.frames.getItemIndex(frame));
-		}
-		
-		private function gitFirstEditingFrame(length:int):Frame
-		{
-			if (length == 1)
-				return gifAnimation.frames[0];
-			return list ? list.editingFrame : null;
 		}
 		
 		private function frameEditHandler(event:FrameEvent):void
@@ -89,7 +82,6 @@
 	
 	<frame:FrameList id="list" dataProvider="{gifAnimation.frames}" 
 		left="0" right="0" top="0" bottom="{showSmallList ? 50 : 0}" contentBackgroundAlpha="0"
-		editingFrame="{gitFirstEditingFrame(gifAnimation.frames.length)}"
 		itemRenderer="views.frame.FrameItemRenderer" verticalScrollPolicy="off">
 		<frame:layout>
 			<s:HorizontalLayout verticalAlign="justify" horizontalAlign="center" 

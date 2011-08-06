@@ -12,6 +12,8 @@ import flash.events.TouchEvent;
 import flash.geom.Matrix;
 import flash.media.Camera;
 import flash.media.Video;
+import flash.text.TextField;
+import flash.text.TextFormat;
 
 import model.Frame;
 import model.Icons;
@@ -33,6 +35,14 @@ import spark.components.Group;
  */
 public class FrameEditor extends UIComponent
 {
+	
+	//--------------------------------------------------------------------------
+	//
+	//  Static constants
+	//
+	//--------------------------------------------------------------------------
+	
+	private static const ERROR_TEXT_FORMAT:TextFormat = new TextFormat("Arial", 14, 0xCC0000);
 	
 	//--------------------------------------------------------------------------
 	//
@@ -70,6 +80,8 @@ public class FrameEditor extends UIComponent
 	private var shotButton:SimpleButton;
 	private var shotBitmap:Bitmap;
 	
+	private var errorTextField:TextField;
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Properties
@@ -93,6 +105,26 @@ public class FrameEditor extends UIComponent
 			return;
 		
 		_frame = value;
+	}
+	
+	//--------------------------------------
+	//  errorText
+	//--------------------------------------
+	
+	private var _errorText:String;
+	
+	public function get errorText():String
+	{
+		return _errorText;
+	}
+	
+	public function set errorText(value:String):void
+	{
+		if (_errorText == value)
+			return;
+		
+		_errorText = value;
+		setErrorText();
 	}
 	
 	//--------------------------------------------------------------------------
@@ -121,35 +153,47 @@ public class FrameEditor extends UIComponent
 		if (unscaledWidth <= 0 || unscaledHeight <= 0)
 			return;
 		
-		busyIndicator.x = unscaledWidth / 2 - busyIndicator.width / 2;
-		busyIndicator.y = unscaledHeight / 2 - busyIndicator.height / 2;
-		
-		var suggestedScaleX:Number = unscaledWidth / (videoContainer.width / videoContainer.scaleX);
-		var suggestedScaleY:Number = unscaledHeight / (videoContainer.height / videoContainer.scaleY);
-		var scale:Number = Math.min(suggestedScaleX, suggestedScaleY);
-		if (Math.abs(videoContainer.scaleX - scale) > 0.01)
+		if (camera)
 		{
-			videoContainer.scaleX = scale;
-			videoContainer.scaleY = scale;
+			busyIndicator.x = unscaledWidth / 2 - busyIndicator.width / 2;
+			busyIndicator.y = unscaledHeight / 2 - busyIndicator.height / 2;
 			
-			// measured width should change
-			invalidateSize();
-			invalidateDisplayList();
+			var suggestedScaleX:Number = unscaledWidth / (videoContainer.width / videoContainer.scaleX);
+			var suggestedScaleY:Number = unscaledHeight / (videoContainer.height / videoContainer.scaleY);
+			var scale:Number = Math.min(suggestedScaleX, suggestedScaleY);
+			if (Math.abs(videoContainer.scaleX - scale) > 0.01)
+			{
+				videoContainer.scaleX = scale;
+				videoContainer.scaleY = scale;
+				
+				// measured width should change
+				invalidateSize();
+				invalidateDisplayList();
+			}
+			
+			videoContainer.x = unscaledWidth / 2;
+			videoContainer.y = unscaledHeight / 2;
+			
+			border.x = videoContainer.x - videoContainer.width / 2 - 5;
+			border.y = videoContainer.y - videoContainer.height / 2 - 4;
+			border.width = videoContainer.width + 10;
+			border.height = videoContainer.height + 12;
+			
+			rotateButton.x = videoContainer.x - rotateButton.width / 2;
+			rotateButton.y = videoContainer.y - videoContainer.height / 2 - 10 - rotateButton.height;
+			
+			shotButton.x = videoContainer.x - shotButton.width / 2;
+			shotButton.y = videoContainer.y + videoContainer.height / 2 + 10;
 		}
 		
-		videoContainer.x = unscaledWidth / 2;
-		videoContainer.y = unscaledHeight / 2;
-		
-		border.x = videoContainer.x - videoContainer.width / 2 - 5;
-		border.y = videoContainer.y - videoContainer.height / 2 - 4;
-		border.width = videoContainer.width + 10;
-		border.height = videoContainer.height + 12;
-		
-		rotateButton.x = videoContainer.x - rotateButton.width / 2;
-		rotateButton.y = videoContainer.y - videoContainer.height / 2 - 10 - rotateButton.height;
-		
-		shotButton.x = videoContainer.x - shotButton.width / 2;
-		shotButton.y = videoContainer.y + videoContainer.height / 2 + 10;
+		if (errorTextField)
+		{
+			errorTextField.x = 20;
+			errorTextField.wordWrap = true;
+			errorTextField.y = unscaledHeight / 2 - 10;
+			errorTextField.width = unscaledWidth - 40;
+			errorTextField.height = unscaledHeight / 3;
+		}
 	}
 	
 	//--------------------------------------------------------------------------
@@ -160,17 +204,42 @@ public class FrameEditor extends UIComponent
 	
 	private function activate():void
 	{
+		invalidateSize();
+		invalidateDisplayList();
+		
+		if (!errorTextField)
+		{
+			errorTextField = new TextField();
+			errorTextField.multiline = true;
+			errorTextField.mouseEnabled = false;
+			setErrorText();
+			addChild(errorTextField);
+		}
+		
+		try
+		{
+			if (!camera)
+				camera = Camera.getCamera();
+		}
+		catch (error:Error)
+		{
+			errorText = "Camera error: " + error.message;
+		}
+		if (!camera)
+		{
+			if (!errorText)
+				errorText = "Camera is not available";
+			return;
+		}
+		
+		updateCamera();
+		
 		if (!busyIndicator)
 		{
 			var busyClass:Class = Icons.instance.picture;
 			busyIndicator = new busyClass();
 			addChild(busyIndicator);
 		}
-		
-		if (!camera)
-			camera = Camera.getCamera();
-		
-		updateCamera();
 		
 		if (!video)
 		{
@@ -219,9 +288,15 @@ public class FrameEditor extends UIComponent
 			InteractiveObject(border).mouseEnabled = false;
 			addChild(border);
 		}
+	}
+	
+	private function setErrorText():void
+	{
+		if (!errorTextField)
+			return;
 		
-		invalidateSize();
-		invalidateDisplayList();
+		errorTextField.text = _errorText ? _errorText : "";
+		errorTextField.setTextFormat(ERROR_TEXT_FORMAT);
 	}
 	
 	private function updateVideoPosition():void
@@ -248,7 +323,8 @@ public class FrameEditor extends UIComponent
 	
 	private function deactivate():void
 	{
-		video.attachCamera(null);
+		if (video)
+			video.attachCamera(null);
 	}
 	
 	private function shot():void

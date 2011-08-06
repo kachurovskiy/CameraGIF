@@ -6,6 +6,7 @@
 	xmlns:frame="views.frame.*"
 	title="Edit animation" defaultButton="{previewButton}"
 	viewDeactivate="gifAnimation.removeEmptyFrames();"
+	viewActivate="editSomeFrame();"
 	actionBarVisible="{enoughHeight}" resize="checkHeight();" 
 	creationComplete="checkHeight();">
 	
@@ -37,6 +38,15 @@
 			
 			enoughHeight = height > (Settings.instance.cameraHeight / 2 + 100 + 
 				(actionBarVisible ? 0 : 50));
+		}
+		
+		private function editSomeFrame():void
+		{
+			if (gifAnimation.frames.length == 0)
+				animationFrames.addFrame();
+			
+			if (gifAnimation.empty)
+				animationFrames.editFrame(gifAnimation.frames[0]);
 		}
 		
 		override protected function viewActivateHandler(event:ViewNavigatorEvent):void
