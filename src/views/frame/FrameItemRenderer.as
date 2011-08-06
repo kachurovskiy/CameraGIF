@@ -3,6 +3,7 @@ package views.frame
 import flash.events.Event;
 
 import model.Frame;
+import model.Settings;
 
 import mx.core.IDataRenderer;
 import mx.core.UIComponent;
@@ -25,7 +26,6 @@ public class FrameItemRenderer extends ItemRenderer
 	{
 		super();
 		
-		width = 150;
 		autoDrawBackground = false;
 	}
 	
@@ -110,8 +110,7 @@ public class FrameItemRenderer extends ItemRenderer
 		if (_frameEditor)
 		{
 			_frameEditor.frame = _frame;
-			_frameEditor.left = 0;
-			_frameEditor.right = 0;
+			_frameEditor.width = Settings.instance.frameWidth;
 			_frameEditor.top = 0;
 			_frameEditor.bottom = 0;
 			addElement(_frameEditor);
@@ -124,8 +123,7 @@ public class FrameItemRenderer extends ItemRenderer
 		
 		frameRenderer = new FrameRenderer();
 		frameRenderer.verticalCenter = 0;
-		frameRenderer.left = 0;
-		frameRenderer.right = 0;
+		frameRenderer.width = Settings.instance.frameWidth;
 		addElement(frameRenderer);
 	}
 	

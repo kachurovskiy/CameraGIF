@@ -52,6 +52,9 @@
 				list.editingFrame = null;
 			
 			gifAnimation.frames.removeItemAt(gifAnimation.frames.getItemIndex(frame));
+			
+			if (gifAnimation.frames.length == 0)
+				addFrame();
 		}
 		
 		private function frameEditHandler(event:FrameEvent):void

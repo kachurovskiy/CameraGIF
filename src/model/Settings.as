@@ -63,6 +63,9 @@ public class Settings extends EventDispatcher
 	[Bindable]
 	public var gifRepeat:int = 0;
 	
+	[Bindable]
+	public var frameWidth:Number = 150;
+	
 	public function save():void
 	{
 		sharedObject.flush();

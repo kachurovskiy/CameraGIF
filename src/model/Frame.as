@@ -1,5 +1,7 @@
 package model
 {
+import by.blooddy.crypto.image.JPEGEncoder;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
@@ -9,11 +11,9 @@ import flash.events.EventDispatcher;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
-import flash.geom.Point;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-import mx.graphics.codec.JPEGEncoder;
 import mx.utils.UIDUtil;
 
 [RemoteClass]
@@ -55,8 +55,6 @@ public class Frame extends EventDispatcher
 	//  Variables
 	//
 	//--------------------------------------------------------------------------
-	
-	private var encoder:JPEGEncoder = new JPEGEncoder(75);
 	
 	[Bindable]
 	public var generation:int = 0;
@@ -132,7 +130,7 @@ public class Frame extends EventDispatcher
 			return null;
 		
 		var byteArray:ByteArray = new ByteArray();
-		return encoder.encode(_bitmapData);
+		return JPEGEncoder.encode(_bitmapData, Settings.instance.jpegQuality);
 	}
 	
 	//----------------------------------
@@ -144,6 +142,9 @@ public class Frame extends EventDispatcher
 	[Bindable("__NoChangeEvent__")]
 	public function get file():File
 	{
+		if (!_uid)
+			return null;
+		
 		var file:File = File.applicationStorageDirectory.resolvePath(
 			getFileAppStorageRelativePath(_uid));
 		return file;

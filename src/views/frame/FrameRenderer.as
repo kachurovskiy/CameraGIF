@@ -2,7 +2,6 @@ package views.frame
 {
 import components.IconButton;
 
-import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -10,15 +9,16 @@ import flash.events.MouseEvent;
 import model.Frame;
 import model.Icons;
 
-import mx.core.UIComponent;
+import mx.effects.Sequence;
+import mx.events.EffectEvent;
 import mx.events.ResizeEvent;
 import mx.graphics.BitmapScaleMode;
-import mx.graphics.SolidColor;
 
 import spark.components.Button;
 import spark.components.Group;
+import spark.effects.Fade;
+import spark.effects.Resize;
 import spark.primitives.BitmapImage;
-import spark.primitives.Rect;
 
 /**
  * Dispatched when "Remove" button is clicked.
@@ -151,6 +151,28 @@ public class FrameRenderer extends Group
 		removeButton.verticalCenter = - scaledBitmapHeight / 2 - 24;
 	}
 	
+	private function startRemoveAnimation():void
+	{
+		var fade:Fade = new Fade();
+		fade.alphaTo = 0;
+		
+		var resize:Resize = new Resize();
+		resize.widthTo = 0;
+		resize.disableLayout = true;
+		
+		var sequence:Sequence = new Sequence();
+		sequence.addChild(fade);
+		sequence.addChild(resize);
+		
+		sequence.play([ this ]);
+		sequence.addEventListener(EffectEvent.EFFECT_END, removeEffect_endHandler);
+	}
+	
+	private function finishRemove():void
+	{
+		dispatchEvent(new FrameEvent(FrameEvent.FRAME_REMOVE, true, true, _frame));
+	}
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Event handlers
@@ -169,12 +191,17 @@ public class FrameRenderer extends Group
 	
 	private function removeButton_clickHandler(event:MouseEvent):void
 	{
-		dispatchEvent(new FrameEvent(FrameEvent.FRAME_REMOVE, true, true, _frame));
+		startRemoveAnimation();
 	}
 	
 	private function resizeHandler(event:ResizeEvent):void
 	{
 		sizeBorder();
+	}
+	
+	private function removeEffect_endHandler(event:EffectEvent):void
+	{
+		finishRemove();
 	}
 	
 }
