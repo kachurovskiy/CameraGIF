@@ -55,10 +55,10 @@ public class Settings extends EventDispatcher
 	public var frameDuration:Number = 2;
 	
 	[Bindable]
-	public var jpegQuality:Number = 75;
+	public var jpegQuality:Number = 80;
 	
 	[Bindable]
-	public var cameraQuality:Number = 75;
+	public var cameraQuality:Number = 100;
 	
 	[Bindable]
 	public var gifRepeat:int = 0;
