@@ -118,7 +118,7 @@ public class Frame extends EventDispatcher
 	[Bindable("bitmapDataChange")]
 	public function get empty():Boolean
 	{
-		return !_bitmapData;
+		return !uid;
 	}
 	
 	//--------------------------------------

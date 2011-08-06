@@ -51,5 +51,18 @@ public class Icons extends EventDispatcher
 	[Embed("icons/rotate.png")]
 	public var rotate:Class;
 	
+	[Bindable("__NoChangeEvent__")]
+	[Embed("icons/camera.png")]
+	public var camera:Class;
+	
+	[Bindable("__NoChangeEvent__")]
+	[Embed("icons/picture.png")]
+	public var picture:Class;
+	
+	[Bindable("__NoChangeEvent__")]
+	[Embed(source="icons/pictureFrame.png", scaleGridTop="5", scaleGridLeft="6",
+		scaleGridBottom="22", scaleGridRight="25")]
+	public var pictureFrame:Class;
+	
 }
 }

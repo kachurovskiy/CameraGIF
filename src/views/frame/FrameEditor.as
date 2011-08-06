@@ -2,6 +2,8 @@ package views.frame
 {
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.DisplayObject;
+import flash.display.InteractiveObject;
 import flash.display.SimpleButton;
 import flash.display.Sprite;
 import flash.events.Event;
@@ -17,6 +19,7 @@ import model.Settings;
 
 import mx.core.UIComponent;
 
+import spark.components.BusyIndicator;
 import spark.components.Group;
 
 /**
@@ -53,11 +56,19 @@ public class FrameEditor extends UIComponent
 	
 	private var camera:Camera;
 	
+	private var busyIndicator:Bitmap;
+	
 	private var videoContainer:Sprite;
+	private var videoRotation:Sprite;
 	private var video:Video;
+	
+	private var border:DisplayObject;
 	
 	private var rotateButton:SimpleButton;
 	private var rotateBitmap:Bitmap;
+	
+	private var shotButton:SimpleButton;
+	private var shotBitmap:Bitmap;
 	
 	//--------------------------------------------------------------------------
 	//
@@ -110,26 +121,35 @@ public class FrameEditor extends UIComponent
 		if (unscaledWidth <= 0 || unscaledHeight <= 0)
 			return;
 		
-		video.x = - video.width / 2;
-		video.y = - video.height / 2;
+		busyIndicator.x = unscaledWidth / 2 - busyIndicator.width / 2;
+		busyIndicator.y = unscaledHeight / 2 - busyIndicator.height / 2;
 		
-		var suggestedScaleX:Number = unscaledWidth / videoContainer.width / videoContainer.scaleX;
-		var suggestedScaleY:Number = unscaledHeight / videoContainer.height / videoContainer.scaleY;
-		var scale:Number = Math.min(suggestedScaleX, suggestedScaleY, 0.5);
+		var suggestedScaleX:Number = unscaledWidth / (videoContainer.width / videoContainer.scaleX);
+		var suggestedScaleY:Number = unscaledHeight / (videoContainer.height / videoContainer.scaleY);
+		var scale:Number = Math.min(suggestedScaleX, suggestedScaleY);
 		if (Math.abs(videoContainer.scaleX - scale) > 0.01)
 		{
 			videoContainer.scaleX = scale;
 			videoContainer.scaleY = scale;
-			videoContainer.x = unscaledWidth / 2;
-			videoContainer.y = unscaledHeight / 2;
 			
 			// measured width should change
 			invalidateSize();
 			invalidateDisplayList();
 		}
 		
+		videoContainer.x = unscaledWidth / 2;
+		videoContainer.y = unscaledHeight / 2;
+		
+		border.x = videoContainer.x - videoContainer.width / 2 - 5;
+		border.y = videoContainer.y - videoContainer.height / 2 - 4;
+		border.width = videoContainer.width + 10;
+		border.height = videoContainer.height + 12;
+		
 		rotateButton.x = videoContainer.x - rotateButton.width / 2;
 		rotateButton.y = videoContainer.y - videoContainer.height / 2 - 10 - rotateButton.height;
+		
+		shotButton.x = videoContainer.x - shotButton.width / 2;
+		shotButton.y = videoContainer.y + videoContainer.height / 2 + 10;
 	}
 	
 	//--------------------------------------------------------------------------
@@ -140,22 +160,30 @@ public class FrameEditor extends UIComponent
 	
 	private function activate():void
 	{
+		if (!busyIndicator)
+		{
+			var busyClass:Class = Icons.instance.picture;
+			busyIndicator = new busyClass();
+			addChild(busyIndicator);
+		}
+		
 		if (!camera)
 			camera = Camera.getCamera();
 		
-		camera.setMode(Settings.instance.cameraWidth, 
-			Settings.instance.cameraHeight, camera.fps);
-		camera.setQuality(0, Settings.instance.cameraQuality);
+		updateCamera();
 		
 		if (!video)
 		{
 			videoContainer = new Sprite();
+			videoRotation = new Sprite();
 			video = new Video(camera.width, camera.height);
-			videoContainer.addChild(video);
+			videoRotation.addChild(video);
+			videoContainer.addChild(videoRotation);
 			videoContainer.addEventListener(TouchEvent.TOUCH_TAP, videoContainer_touchTapHandler);
 			videoContainer.addEventListener(MouseEvent.CLICK, videoContainer_clickHandler);
 			addChild(videoContainer);
 		}
+		updateVideoPosition();
 		video.attachCamera(camera);
 		
 		if (!rotateButton)
@@ -171,8 +199,51 @@ public class FrameEditor extends UIComponent
 			addChild(rotateButton);
 		}
 		
+		if (!shotButton)
+		{
+			shotButton = new SimpleButton();
+			var shotClass:Class = Icons.instance.camera;
+			shotBitmap = new shotClass();
+			shotButton.hitTestState = shotBitmap;
+			shotButton.upState = shotBitmap;
+			shotButton.overState = shotBitmap;
+			shotButton.downState = shotBitmap;
+			shotButton.addEventListener(MouseEvent.CLICK, shotButton_clickHandler);
+			addChild(shotButton);
+		}
+		
+		if (!border)
+		{
+			var borderClass:Class = Icons.instance.pictureFrame;
+			border = new borderClass();
+			InteractiveObject(border).mouseEnabled = false;
+			addChild(border);
+		}
+		
 		invalidateSize();
 		invalidateDisplayList();
+	}
+	
+	private function updateVideoPosition():void
+	{
+		video.width = camera.width;
+		video.height = camera.height;
+		video.x = - video.width / 2;
+		video.y = - video.height / 2;
+	}
+	
+	private function updateCamera():void
+	{
+		var swapWidthHeight:Boolean = videoRotation ? videoRotation.rotation % 180 != 0 : false;
+		var cameraWidth:Number = Settings.instance.cameraWidth;
+		var cameraHeight:Number = Settings.instance.cameraHeight;
+		if (swapWidthHeight)
+		{
+			cameraWidth = Settings.instance.cameraHeight;
+			cameraHeight = Settings.instance.cameraWidth;
+		}
+		camera.setMode(cameraWidth, cameraHeight, camera.fps);
+		camera.setQuality(0, Settings.instance.cameraQuality);
 	}
 	
 	private function deactivate():void
@@ -185,7 +256,6 @@ public class FrameEditor extends UIComponent
 		var bitmapData:BitmapData = new BitmapData(videoContainer.width / videoContainer.scaleX, 
 			videoContainer.height / videoContainer.scaleY, false);
 		var matrix:Matrix = new Matrix();
-		matrix.rotate(videoContainer.rotation / 180 * Math.PI);
 		matrix.translate(bitmapData.width / 2, bitmapData.height / 2);
 		bitmapData.draw(videoContainer, matrix);
 		_frame.bitmapData = bitmapData;
@@ -223,9 +293,16 @@ public class FrameEditor extends UIComponent
 	
 	private function rotateButton_clickHandler(event:MouseEvent):void
 	{
-		videoContainer.rotation += 90;
-		invalidateDisplayList();
-		invalidateSize();
+		videoRotation.rotation += 90;
+		updateCamera();
+		if (video)
+			updateVideoPosition();
+		callLater(invalidateDisplayList);
+	}
+	
+	private function shotButton_clickHandler(event:MouseEvent):void
+	{
+		shot();
 	}
 	
 }

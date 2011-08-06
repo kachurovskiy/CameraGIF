@@ -79,6 +79,14 @@
 	]]>
 	</fx:Script>
 	
+	<fx:Declarations>
+		
+		<s:GlowFilter id="glow" color="0xFFFFFF" blurX="2" blurY="2" strength="255" alpha="1"/>
+		
+		<s:DropShadowFilter id="dropShadow" distance="2" alpha="0.3"/>
+		
+	</fx:Declarations>
+	
 	<frame:FrameList id="list" dataProvider="{gifAnimation.frames}" 
 		left="0" right="0" top="0" bottom="{showSmallList ? 50 : 0}" contentBackgroundAlpha="0"
 		editingFrame="{gitFirstEditingFrame(gifAnimation.frames.length)}"
@@ -98,7 +106,8 @@
 	<components:List id="smallList" left="0" right="0" bottom="0" height="50"
 		itemRenderer="views.frame.SmallFrameItemRenderer" dataProvider="{gifAnimation.frames}"
 		change="list.ensureIndexIsVisible(event.newIndex);" contentBackgroundAlpha="0"
-		visible="{showSmallList}" includeInLayout="{showSmallList}">
+		visible="{showSmallList}" includeInLayout="{showSmallList}" 
+		filters="{glow ? [ glow, dropShadow ] : null}">
 		<components:layout>
 			<s:HorizontalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
 				paddingTop="5" gap="5" verticalAlign="justify" horizontalAlign="left"/>

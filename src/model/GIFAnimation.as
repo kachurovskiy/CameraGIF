@@ -1,7 +1,10 @@
 package model
 {
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.utils.ByteArray;
 
@@ -163,21 +166,39 @@ public class GIFAnimation extends EventDispatcher
 		if (empty)
 			return null;
 		
-		var size:Point = getSize();
 		var encoder:GIFEncoder = new GIFEncoder();
 		encoder.start();
 		// we call the setRepeat method with 0 as parameter so that it loops
 		encoder.setRepeat(Settings.instance.gifRepeat);
 		encoder.setDelay(Settings.instance.frameDuration * 1000);
+		var size:Point = getSize();
+		var cacheBitmapData:BitmapData = new BitmapData(size.x, size.y);
 		for each (var frame:Frame in frames)
 		{
-			if (frame.empty)
-				continue;
-			
-			encoder.addFrame(frame.bitmapData);
+			encoder.addFrame(sizeBitmap(frame.bitmapData, cacheBitmapData, size));
 		}
 		encoder.finish();
 		return encoder.stream;
+	}
+	
+	private function sizeBitmap(bitmapData:BitmapData, cacheBitmapData:BitmapData, size:Point):BitmapData
+	{
+		if (bitmapData.width == size.x && bitmapData.height == size.y)
+			return bitmapData;
+		
+		// clear bitmap with black
+		cacheBitmapData.floodFill(0, 0, 0xFF000000);
+		
+		// scale bitmap to GIF size
+		var scale:Number = Math.min(size.x / bitmapData.width, size.y / bitmapData.height);
+		var destPoint:Point = new Point((size.x - bitmapData.width * scale) / 2, 
+			(size.y - bitmapData.height * scale) / 2);
+		var matrix:Matrix = new Matrix();
+		matrix.scale(scale, scale);
+		matrix.translate(destPoint.x, destPoint.y);
+		cacheBitmapData.draw(bitmapData, matrix, null, null, null, true);
+		
+		return cacheBitmapData;
 	}
 	
 	public function generateGIFBase64():String
@@ -193,8 +214,19 @@ public class GIFAnimation extends EventDispatcher
 	
 	public function getSize():Point
 	{
-		var frame:Frame = frames[0];
-		return new Point(frame.bitmapData.width, frame.bitmapData.height);
+		var point:Point = new Point();
+		for each (var frame:Frame in frames)
+		{
+			if (frame.empty)
+				continue;
+			
+			if (frame.bitmapData.width > point.x)
+				point.x = frame.bitmapData.width;
+			
+			if (frame.bitmapData.height > point.y)
+				point.y = frame.bitmapData.height;
+		}
+		return point;
 	}
 	
 	//--------------------------------------------------------------------------

@@ -104,14 +104,16 @@ public class FrameItemRenderer extends ItemRenderer
 		}
 		
 		_frameEditor = value;
+		frameRenderer.visible = _frameEditor == null;
 		invalidateDisplayList();
 		
 		if (_frameEditor)
 		{
 			_frameEditor.frame = _frame;
-			_frameEditor.verticalCenter = 0;
 			_frameEditor.left = 0;
 			_frameEditor.right = 0;
+			_frameEditor.top = 0;
+			_frameEditor.bottom = 0;
 			addElement(_frameEditor);
 		}
 	}

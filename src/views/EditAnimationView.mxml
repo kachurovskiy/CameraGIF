@@ -52,7 +52,7 @@
 		<s:VerticalLayout gap="0" horizontalAlign="justify"/>
 	</components:layout>
 	
-	<frame:AnimationFrames id="animationFrames" height="100%" gifAnimation="{gifAnimation}"
+	<frame:FramesEditor id="animationFrames" height="100%" gifAnimation="{gifAnimation}"
 		showSmallList="{enoughHeight}"/>
 	
 	<components:ViewControlbar enabled="{gifAnimation &amp;&amp; !gifAnimation.empty}">

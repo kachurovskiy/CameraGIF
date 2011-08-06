@@ -28,6 +28,13 @@ public class UploadImgurAction extends EventDispatcher
 	{
 		this.gifAnimation = gifAnimation;
 		
+		var base64:String = gifAnimation.generateGIFBase64();
+		if (!base64)
+		{
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "Failed to generate image"));
+			return;
+		}
+			
 		urlLoader = new URLLoader();
 		urlLoader.addEventListener(Event.COMPLETE, urlLoader_completeHandler);
 		urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoader_errorHandler);
@@ -36,7 +43,7 @@ public class UploadImgurAction extends EventDispatcher
 		request.method = URLRequestMethod.POST;
 		var urlVariables:URLVariables = new URLVariables();
 		urlVariables.key = ImgurAppData.API_KEY;
-		urlVariables.image = gifAnimation.generateGIFBase64();
+		urlVariables.image = base64;
 		urlVariables.name = gifAnimation.name + ".gif";
 		urlVariables.title = gifAnimation.name;
 		request.data = urlVariables;
@@ -47,7 +54,13 @@ public class UploadImgurAction extends EventDispatcher
 	{
 		var errorText:String = event.text;
 		if (urlLoader.data)
-			errorText = (new XML(urlLoader.data)).message;
+		{
+			try
+			{
+				errorText = (new XML(urlLoader.data)).message;
+			}
+			catch (error:*) {}
+		}
 		dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorText));
 	}
 	

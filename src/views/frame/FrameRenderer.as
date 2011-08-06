@@ -1,5 +1,7 @@
 package views.frame
 {
+import components.IconButton;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.events.Event;
@@ -9,11 +11,14 @@ import model.Frame;
 import model.Icons;
 
 import mx.core.UIComponent;
+import mx.events.ResizeEvent;
 import mx.graphics.BitmapScaleMode;
+import mx.graphics.SolidColor;
 
 import spark.components.Button;
 import spark.components.Group;
 import spark.primitives.BitmapImage;
+import spark.primitives.Rect;
 
 /**
  * Dispatched when "Remove" button is clicked.
@@ -49,19 +54,29 @@ public class FrameRenderer extends Group
 		bitmapImage.verticalCenter = 0;
 		addElement(bitmapImage);
 		
-		editButton = new Button();
+		bitmapBorder = new BitmapImage();
+		bitmapBorder.right = 5;
+		bitmapBorder.left = 5;
+		bitmapBorder.verticalCenter = 2;
+		bitmapBorder.source = Icons.instance.pictureFrame;
+		bitmapBorder.smooth = true;
+		addElement(bitmapBorder);
+		
+		editButton = new IconButton();
 		editButton.setStyle("icon", Icons.instance.edit);
 		editButton.addEventListener(MouseEvent.CLICK, editButton_clickHandler);
 		editButton.left = 20;
 		editButton.verticalCenter = -50;
 		addElement(editButton);
 		
-		removeButton = new Button();
+		removeButton = new IconButton();
 		removeButton.setStyle("icon", Icons.instance.remove);
 		removeButton.addEventListener(MouseEvent.CLICK, removeButton_clickHandler);
 		removeButton.right = 20;
 		removeButton.verticalCenter = -50;
 		addElement(removeButton);
+		
+		addEventListener(ResizeEvent.RESIZE, resizeHandler);
 	}
 	
 	//--------------------------------------------------------------------------
@@ -69,6 +84,8 @@ public class FrameRenderer extends Group
 	//  Variables
 	//
 	//--------------------------------------------------------------------------
+	
+	private var bitmapBorder:BitmapImage;
 	
 	private var bitmapImage:BitmapImage;
 	
@@ -119,6 +136,19 @@ public class FrameRenderer extends Group
 		var bitmapData:BitmapData = _frame ? _frame.bitmapData : null;
 		visible = bitmapData != null;
 		bitmapImage.source = bitmapData;
+		sizeBorder();
+	}
+	
+	private function sizeBorder():void
+	{
+		var bitmapData:BitmapData = _frame ? _frame.bitmapData : null;
+		if (!bitmapData || width <= 0)
+			return;
+		
+		var scaledBitmapHeight:Number = (bitmapData.height / bitmapData.width) * (width - 20);
+		bitmapBorder.height = scaledBitmapHeight + 12;
+		editButton.verticalCenter = - scaledBitmapHeight / 2 - 24;
+		removeButton.verticalCenter = - scaledBitmapHeight / 2 - 24;
 	}
 	
 	//--------------------------------------------------------------------------
@@ -140,6 +170,11 @@ public class FrameRenderer extends Group
 	private function removeButton_clickHandler(event:MouseEvent):void
 	{
 		dispatchEvent(new FrameEvent(FrameEvent.FRAME_REMOVE, true, true, _frame));
+	}
+	
+	private function resizeHandler(event:ResizeEvent):void
+	{
+		sizeBorder();
 	}
 	
 }

@@ -63,6 +63,7 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:BitmapImage left="0" right="0" top="0" bottom="0" id="bitmapImage" scaleMode="letterbox"/>
+	<s:BitmapImage left="0" right="0" top="0" bottom="0" id="bitmapImage" 
+		scaleMode="letterbox" smooth="true"/>
 	
 </components:GIFView>
