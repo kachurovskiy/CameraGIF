@@ -49,10 +49,6 @@
 			
 			<s:Form styleName="stackedForm" width="100%" height="100%">
 				
-				<s:layout>
-					<s:TileLayout/>
-				</s:layout>
-				
 				<s:FormItem label="Camera width">
 					
 					<s:NumericStepper value="@{Settings.instance.cameraWidth}" stepSize="50"
