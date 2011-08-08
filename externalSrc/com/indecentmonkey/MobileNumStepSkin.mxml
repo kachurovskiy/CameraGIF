@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
 
     ADOBE SYSTEMS INCORPORATED
@@ -10,29 +9,13 @@
     in accordance with the terms of the license agreement accompanying it.
 
 -->
-
-<!--- The default skin class for a Spark NumericStepper component. The skin for the text input field on a NumericStepper
-component is defined by the NumericStepperTextInputSkin class.  
-
-       @see spark.components.NumericStepper
-       @see spark.skins.spark.NumericStepperTextInputSkin
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
--->
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
       xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minHeight="23" minWidth="40" 
-      alpha.disabled="0.5" width.normal="250" height.normal="76">
+      alpha.disabled="0.5" width.normal="200" height.normal="50">
 
     <fx:Metadata>
-    <![CDATA[ 
-        /** 
-         * @copy spark.skins.spark.ApplicationSkin#hostComponent
-         */
         [HostComponent("spark.components.NumericStepper")]
-    ]]>
     </fx:Metadata> 
     
     <fx:Script fb:purpose="styling">
@@ -115,20 +98,20 @@ component is defined by the NumericStepperTextInputSkin class.
     <!--- The default class is NumericStepperIncrementButtonSkin.
            @copy spark.components.Spinner#incrementButton
            @see spark.skins.spark.NumericStepperIncrementButtonSkin -->
-    <s:Button id="incrementButton" left="0" top="0" height="100%" width="70"
+    <s:Button id="incrementButton" left="0" top="0" height="100%" width="50"
               skinClass="com.indecentmonkey.IncrementButtonSkin"/>
               
     <!--- The default class is NumericStepperDecrementButtonSkin.
             @copy spark.components.Spinner#decrementButton
             @see spark.skins.spark.NumericStepperDecrementButtonSkin -->
-    <s:Button id="decrementButton" right="0" bottom="0" height="100%" width="70" 
+    <s:Button id="decrementButton" right="0" bottom="0" height="100%" width="50" 
               skinClass="com.indecentmonkey.DecrementButtonSkin"/>
                            
     <!--- The default class is NumericStepperTextInputSkin.
             @copy spark.components.NumericStepper#textDisplay
             @see spark.skins.spark.NumericStepperTextInputSkin -->
-    <s:TextInput id="textDisplay" top="0" bottom="0" restrict="0123456789."
-        skinClass="spark.skins.spark.NumericStepperTextInputSkin" width.normal="110" top.normal="0" left.disabled="0"
+    <s:TextInput id="textDisplay" top="0" bottom="0" restrict="0123456789." editable="false"
+        skinClass="spark.skins.spark.NumericStepperTextInputSkin" width.normal="100" top.normal="0" left.disabled="0"
 		bottom.normal="0" right.disabled="18" horizontalCenter.normal="0" textAlign.normal="center" fontSize.normal="23"/>
         
 </s:SparkSkin>

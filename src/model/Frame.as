@@ -1,5 +1,7 @@
 package model
 {
+import actions.WriteToFileAction;
+
 import by.blooddy.crypto.image.JPEGEncoder;
 
 import flash.display.Bitmap;
@@ -56,6 +58,7 @@ public class Frame extends EventDispatcher
 	//
 	//--------------------------------------------------------------------------
 	
+	[Transient]
 	[Bindable]
 	public var generation:int = 0;
 	
@@ -112,7 +115,6 @@ public class Frame extends EventDispatcher
 	//  empty
 	//----------------------------------
 	
-	[Transient]
 	[Bindable("bitmapDataChange")]
 	public function get empty():Boolean
 	{
@@ -123,7 +125,6 @@ public class Frame extends EventDispatcher
 	//  bitmapBytes
 	//--------------------------------------
 	
-	[Transient]
 	public function get bitmapBytes():ByteArray 
 	{
 		if (!_bitmapData)
@@ -179,10 +180,8 @@ public class Frame extends EventDispatcher
 		if (!_uid)
 			_uid = UIDUtil.createUID();
 		
-		var fileStream:FileStream = new FileStream();
-		fileStream.openAsync(file, FileMode.WRITE);
-		fileStream.writeBytes(bitmapBytes);
-		fileStream.close();
+		var action:WriteToFileAction = new WriteToFileAction();
+		action.start(file, bitmapBytes);
 	}
 	
 	//--------------------------------------------------------------------------

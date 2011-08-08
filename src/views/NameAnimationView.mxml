@@ -41,6 +41,7 @@
 			super.viewActivateHandler(event);
 			
 			initialName = gifAnimation.name;
+			gifAnimation.removeEmptyFrames();
 		}
 		
 		override protected function viewDeactivateHandler(event:ViewNavigatorEvent):void
